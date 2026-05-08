@@ -25,10 +25,10 @@ git push -u origin master
 ## Step 3 — Run setup script (after first CI pass)
 
 Wait for the first CI run to complete (creates the "All checks passed" status),
-then run:
+then run from the template repo:
 
 ```bash
-bash scripts/setup-repo.sh
+bash /path/to/python-library-template/scripts/setup-repo.sh {{ github_org }}/{{ project_slug }}
 ```
 
 This configures:
