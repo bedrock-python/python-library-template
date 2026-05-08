@@ -82,8 +82,8 @@ line-length = 120
 target-version = "py{{ python_min_version | replace('.', '') }}"
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "I", "B", "N", "S", "C4", "SIM", "TRY", "PERF", "RUF", "UP", "ANN", "T20", "PTH", "PLC", "PLE", "PLW"]
-ignore = ["TRY003", "S101", "ANN401", "RUF012", "ANN204", "N802", "PERF401", "SIM105"]
+select = ["F", "E", "W", "I", "B", "N", "S", "C4", "DTZ", "SIM", "TRY", "PERF", "RUF", "UP", "ANN", "T20", "PTH", "PLC", "PLE", "PLW"]
+ignore = ["TRY003", "S101", "ANN401", "RUF012", "S104", "S105", "S106", "ANN204", "DTZ", "ANN", "N802", "PERF401", "SIM105", "S607"]
 
 [tool.ruff.format]
 quote-style = "double"
