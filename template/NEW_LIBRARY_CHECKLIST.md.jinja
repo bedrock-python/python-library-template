@@ -1,0 +1,77 @@
+# New library checklist: {{ project_name }}
+
+Delete this file after completing setup.
+
+## Step 1 — Local setup
+
+```bash
+uv sync --group dev
+uv run pre-commit install --hook-type commit-msg
+make check      # should pass on a fresh repo
+```
+
+## Step 2 — Create GitHub repo and push
+
+```bash
+gh repo create {{ github_org }}/{{ project_slug }} --public \
+  --description "{{ project_description }}"
+git init
+git add .
+git commit -m "feat: initial release of {{ project_name }}"
+git remote add origin https://github.com/{{ github_org }}/{{ project_slug }}.git
+git push -u origin master
+```
+
+## Step 3 — Run setup script (after first CI pass)
+
+Wait for the first CI run to complete (creates the "All checks passed" status),
+then run:
+
+```bash
+bash scripts/setup-repo.sh
+```
+
+This configures:
+- GitHub environments (`pypi`, `github-pages`)
+- GitHub Pages (source: GitHub Actions)
+- Actions permissions (allow creating PRs for Release Please)
+- Branch protection on `master` requiring `All checks passed`
+
+## Step 4 — PyPI Trusted Publisher (manual)
+
+Go to https://pypi.org/manage/account/publishing/ → Add pending publisher:
+
+| Field | Value |
+|---|---|
+| PyPI project name | `{{ project_slug }}` |
+| Owner | `{{ github_org }}` |
+| Repository | `{{ project_slug }}` |
+| Workflow | `publish.yml` |
+| Environment | `pypi` |
+
+## Step 5 — Codecov (manual)
+
+1. Go to https://app.codecov.io → add repo `{{ github_org }}/{{ project_slug }}`
+2. Copy the `CODECOV_TOKEN`
+3. Add it: GitHub repo → Settings → Secrets → Actions → `CODECOV_TOKEN`
+
+## Step 6 — First release
+
+After merging code, Release Please will create a release PR automatically.
+Merge it → tag `v{{ initial_version }}` is created → PyPI publish triggers.
+
+Or to publish manually:
+```bash
+git tag v{{ initial_version }}
+git push origin v{{ initial_version }}
+# Then create a GitHub Release from that tag
+```
+
+## Done ✓
+
+- [ ] `make check` passes
+- [ ] CI green on first push
+- [ ] `setup-repo.sh` ran successfully
+- [ ] PyPI Trusted Publisher configured
+- [ ] `CODECOV_TOKEN` secret added
+- [ ] First release published to PyPI

@@ -40,3 +40,13 @@ initial_version:
   default: "0.1.0"
 
 _subdirectory: template
+
+_tasks:
+  - >-
+    echo "\n✓ Template generated!\n\nNext steps:\n
+    1. cd into your project and run: uv sync --group dev\n
+    2. uv run pre-commit install --hook-type commit-msg\n
+    3. Create GitHub repo and push\n
+    4. bash scripts/setup-repo.sh  (after first CI pass)\n
+    5. Configure PyPI Trusted Publisher at pypi.org\n
+    6. Add CODECOV_TOKEN secret\n\nSee NEW_LIBRARY_CHECKLIST.md for full details."
