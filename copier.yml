@@ -1,0 +1,42 @@
+project_name:
+  type: str
+  help: "Display name (e.g. my-library)"
+
+project_slug:
+  type: str
+  help: "PyPI package name, kebab-case (e.g. my-library)"
+  default: "{{ project_name | lower | replace(' ', '-') }}"
+
+package_name:
+  type: str
+  help: "Python import name, snake_case (e.g. my_library)"
+  default: "{{ project_slug | replace('-', '_') }}"
+
+project_description:
+  type: str
+  help: "One-line description for pyproject.toml and docs"
+
+author_name:
+  type: str
+  help: "Author full name"
+
+author_email:
+  type: str
+  help: "Author email"
+
+github_org:
+  type: str
+  help: "GitHub organization or username"
+  default: "bedrock-python"
+
+python_min_version:
+  type: str
+  help: "Minimum Python version"
+  default: "3.11"
+
+initial_version:
+  type: str
+  help: "Initial version"
+  default: "0.1.0"
+
+_subdirectory: template
