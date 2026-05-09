@@ -41,6 +41,9 @@ initial_version:
 
 _subdirectory: template
 
+_jinja_extensions:
+  - jinja2_time.TimeExtension
+
 _tasks:
   - >-
     echo "\n✓ Template generated!\n\nNext steps:\n
