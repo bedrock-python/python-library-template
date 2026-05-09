@@ -25,7 +25,7 @@ Copier will prompt for:
 | `author_email` | Author email | `you@example.com` |
 | `github_org` | GitHub org or username | `bedrock-python` |
 | `python_min_version` | Minimum Python version | `3.11` |
-| `initial_version` | Initial version | `0.1.0` |
+| `initial_version` | Initial version | `0.0.0` |
 
 ## After generation
 
@@ -42,10 +42,24 @@ make check
 
 Then:
 1. Create a GitHub repo: `gh repo create bedrock-python/my-library --public`
-2. Push: `git init && git add . && git commit -m "feat: initial release" && git push -u origin master`
-3. Set up PyPI Trusted Publisher at pypi.org/manage/account/publishing/
-4. Enable GitHub Pages in repo Settings → Pages → Source: GitHub Actions
+2. **Configure repo** (run once, then delete):
+   ```bash
+   python scripts/setup_repo.py bedrock-python/my-library
+   git rm scripts/setup_repo.py .claude/LIBRARY_CREATION.md
+   ```
+3. **Push** (⚠️ **no** `Co-Authored-By:` in commits!):
+   ```bash
+   git init && git add . && git commit -m "feat: initial release" && git push -u origin master
+   ```
+4. Set up PyPI Trusted Publisher at pypi.org/manage/account/publishing/
 5. Add `CODECOV_TOKEN` secret in repo Settings → Secrets → Actions
+
+## For AI Agents
+
+See [`.claude/LIBRARY_CREATION.md`](.claude/LIBRARY_CREATION.md) for important rules:
+- **Never** add AI agents as co-authors in commits
+- Delete `scripts/setup_repo.py` before initial commit
+- Start with version `0.0.0` (Release Please creates `0.1.0`)
 
 ## What's included
 
