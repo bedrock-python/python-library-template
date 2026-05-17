@@ -56,7 +56,7 @@ def main() -> None:
         "api", f"repos/{repo}/actions/permissions/workflow",
         "-X", "PUT",
         "-f", "default_workflow_permissions=write",
-        "-f", "can_approve_pull_request_reviews=true",
+        "-F", "can_approve_pull_request_reviews=true",
     )
 
     # ── Branch protection ─────────────────────────────────────────────────────
