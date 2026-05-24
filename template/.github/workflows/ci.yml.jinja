@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
-      - run: uv sync --group dev
+      - run: uv sync --group dev --all-extras
       - run: uv run ruff check
       - run: uv run ruff format --check
       - run: uv run mypy {{ package_name }}
@@ -31,8 +31,14 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${% raw %}{{ matrix.python-version }}{% endraw %}
-      - run: uv sync --group dev
-      - run: uv run pytest -m unit
+      - run: uv sync --group dev --all-extras
+      - run: uv run pytest -m unit --cov={{ package_name }} --cov-report=xml --cov-fail-under=90
+      - uses: codecov/codecov-action@v6
+        if: matrix.python-version == '3.12'
+        with:
+          token: ${% raw %}{{ secrets.CODECOV_TOKEN }}{% endraw %}
+          files: coverage.xml
+        continue-on-error: true
 
   test-integration:
     name: Integration tests
@@ -41,13 +47,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
-      - run: uv sync --group dev
-      - run: uv run pytest -m integration --cov={{ package_name }} --cov-report=xml --cov-fail-under=90
-      - uses: codecov/codecov-action@v6
-        with:
-          token: ${% raw %}{{ secrets.CODECOV_TOKEN }}{% endraw %}
-          files: coverage.xml
-        continue-on-error: true
+      - run: uv sync --group dev --all-extras
+      - name: Run integration tests
+        run: |
+          set +e
+          uv run pytest -m integration
+          STATUS=$?
+          set -e
+          test $STATUS -eq 0 -o $STATUS -eq 5
 
   # Sentinel job — use this as the single required status check in branch protection.
   all-checks-passed:
