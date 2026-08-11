@@ -20,7 +20,7 @@ def gh(*args: str, input: str | None = None, silent: bool = False) -> str:
         text=True,
     )
     if result.returncode != 0 and not silent:
-        print(f"  ✗ gh {' '.join(args)}")
+        print(f"  [FAIL] gh {' '.join(args)}")
         print(f"    {result.stderr.strip()}")
     return result.stdout.strip()
 
@@ -35,13 +35,13 @@ def main() -> None:
 
     print(f"Setting up {repo}...\n")
 
-    # ── Environments ─────────────────────────────────────────────────────────
-    print("  → Creating environments...")
+    # -- Environments ---------------------------------------------------------
+    print("  -> Creating environments...")
     gh("api", f"repos/{repo}/environments/pypi", "-X", "PUT", silent=True)
     gh("api", f"repos/{repo}/environments/github-pages", "-X", "PUT", silent=True)
 
-    # ── GitHub Pages ──────────────────────────────────────────────────────────
-    print("  → Enabling GitHub Pages (GitHub Actions source)...")
+    # -- GitHub Pages ---------------------------------------------------------
+    print("  -> Enabling GitHub Pages (GitHub Actions source)...")
     gh(
         "api", f"repos/{repo}/pages",
         "-X", "POST",
@@ -50,8 +50,8 @@ def main() -> None:
         silent=True,
     )
 
-    # ── Actions: allow creating PRs ───────────────────────────────────────────
-    print("  → Allowing Actions to create pull requests...")
+    # -- Actions: allow creating PRs -------------------------------------------
+    print("  -> Allowing Actions to create pull requests...")
     gh(
         "api", f"repos/{repo}/actions/permissions/workflow",
         "-X", "PUT",
@@ -59,8 +59,8 @@ def main() -> None:
         "-F", "can_approve_pull_request_reviews=true",
     )
 
-    # ── Branch protection ─────────────────────────────────────────────────────
-    print("  → Setting branch protection on master...")
+    # -- Branch protection -----------------------------------------------------
+    print("  -> Setting branch protection on master...")
     protection = json.dumps({
         "required_status_checks": {
             "strict": True,
@@ -80,12 +80,12 @@ def main() -> None:
         input=protection,
     )
 
-    print("\n✓ Done!\n")
+    print("\n[OK] Done!\n")
     print("Remaining manual steps:")
-    print(f"  1. PyPI Trusted Publisher → https://pypi.org/manage/account/publishing/")
+    print("  1. PyPI Trusted Publisher -> https://pypi.org/manage/account/publishing/")
     print(f"     project: {name} | org: {org} | repo: {name} | workflow: publish.yml | env: pypi")
-    print(f"  2. CODECOV_TOKEN → https://app.codecov.io/gh/{repo}")
-    print(f"     GitHub repo → Settings → Secrets → Actions → CODECOV_TOKEN")
+    print(f"  2. CODECOV_TOKEN -> https://app.codecov.io/gh/{repo}")
+    print("     GitHub repo -> Settings -> Secrets -> Actions -> CODECOV_TOKEN")
 
 
 if __name__ == "__main__":
