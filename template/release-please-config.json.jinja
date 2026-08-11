@@ -4,7 +4,13 @@
     ".": {
       "release-type": "python",
       "package-name": "{{ project_slug }}",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "{{ package_name }}/__version__.py"
+        }
+      ]
     }
   }
 }
