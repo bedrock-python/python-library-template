@@ -57,13 +57,20 @@ Go to https://pypi.org/manage/account/publishing/ → Add pending publisher:
 
 ## Step 6 — First release
 
-After merging code, Release Please will create a release PR automatically.
-Merge it → tag `v{{ initial_version }}` is created → PyPI publish triggers.
+The project starts at `{{ initial_version }}`; Release Please cuts the first real
+release (`0.1.0` from a `feat:` commit, `0.0.1` from a `fix:`).
+
+After merging code, Release Please creates a release PR automatically. Check that
+it bumps all three: `CHANGELOG.md`, `.release-please-manifest.json` **and**
+`{{ package_name }}/__version__.py` — the last one only works thanks to the
+`# x-release-please-version` anchor in that file, so never drop it.
+
+Merge the PR → tag `{{ project_slug }}-v0.1.0` is created → PyPI publish triggers.
 
 Or to publish manually:
 ```bash
-git tag v{{ initial_version }}
-git push origin v{{ initial_version }}
+git tag {{ project_slug }}-v0.1.0
+git push origin {{ project_slug }}-v0.1.0
 # Then create a GitHub Release from that tag
 ```
 
@@ -71,7 +78,7 @@ git push origin v{{ initial_version }}
 
 - [ ] `make check` passes
 - [ ] CI green on first push
-- [ ] `setup-repo.sh` ran successfully
+- [ ] `setup_repo.py` ran successfully
 - [ ] PyPI Trusted Publisher configured
 - [ ] `CODECOV_TOKEN` secret added
 - [ ] First release published to PyPI

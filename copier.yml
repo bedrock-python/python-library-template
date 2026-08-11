@@ -36,8 +36,8 @@ python_min_version:
 
 initial_version:
   type: str
-  help: "Initial version"
-  default: "0.1.0"
+  help: "Initial version (keep 0.0.0 — Release Please cuts the first real release)"
+  default: "0.0.0"
 
 _subdirectory: template
 
@@ -46,10 +46,12 @@ _jinja_extensions:
 
 _tasks:
   - >-
-    echo "\n✓ Template generated!\n\nNext steps:\n
-    1. cd into your project and run: uv sync --group dev\n
-    2. uv run pre-commit install --hook-type commit-msg\n
-    3. Create GitHub repo and push\n
-    4. bash scripts/setup-repo.sh  (after first CI pass)\n
-    5. Configure PyPI Trusted Publisher at pypi.org\n
-    6. Add CODECOV_TOKEN secret\n\nSee NEW_LIBRARY_CHECKLIST.md for full details."
+    echo "Template generated. Next steps:
+    1. uv sync --group dev
+    2. uv run pre-commit install --hook-type commit-msg
+    3. Create the GitHub repo and push (branch: master)
+    4. After the first CI pass, from the template repo:
+    python scripts/setup_repo.py {{ github_org }}/{{ project_slug }}
+    5. Configure the PyPI Trusted Publisher at pypi.org
+    6. Add the CODECOV_TOKEN secret.
+    See NEW_LIBRARY_CHECKLIST.md for full details."
