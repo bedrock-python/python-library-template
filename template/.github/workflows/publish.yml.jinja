@@ -66,7 +66,7 @@ jobs:
           VERSION="${% raw %}{{ needs.check.outputs.tag }}{% endraw %}"
           VERSION="${VERSION#{{ project_slug }}-}"
           VERSION="${VERSION#v}"
-          echo "__version__ = \"$VERSION\"  # x-release-please-version" > {{ package_name }}/__version__.py
+          echo "__version__ = \"$VERSION\"" > {{ package_name }}/version.py
 
       - run: uv build
       - run: uv publish

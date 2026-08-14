@@ -62,8 +62,9 @@ release (`0.1.0` from a `feat:` commit, `0.0.1` from a `fix:`).
 
 After merging code, Release Please creates a release PR automatically. Check that
 it bumps all three: `CHANGELOG.md`, `.release-please-manifest.json` **and**
-`{{ package_name }}/__version__.py` — the last one only works thanks to the
-`# x-release-please-version` anchor in that file, so never drop it.
+`{{ package_name }}/version.py` — the last one works because the python
+release-type natively updates every file named `version.py` (matching the
+`__version__ = "..."` line; no magic comments needed). Never rename that file.
 
 Merge the PR → tag `{{ project_slug }}-v0.1.0` is created → PyPI publish triggers.
 
