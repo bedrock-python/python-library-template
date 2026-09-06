@@ -10,6 +10,16 @@ uv run pre-commit install --hook-type commit-msg
 make check      # should pass on a fresh repo
 ```
 
+Then fill in `docs/agents.md`. It ships as a skeleton with `TODO` markers, and it is the
+page people hand to a coding assistant instead of the whole site — write it from the API
+you actually wrote, verify every name it tells a caller to import, and delete the
+guidance comment at the top. `https://bedrock-python.github.io/pg-partsmith/agents/` is
+the worked example. `CONTRIBUTING.md` keeps it current from there.
+
+```bash
+make docs-build   # the page is in the nav, so the build fails without it
+```
+
 ## Step 2 — Create GitHub repo and push
 
 ```bash

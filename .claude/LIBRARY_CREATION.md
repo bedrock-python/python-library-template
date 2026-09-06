@@ -73,7 +73,28 @@ When creating a new library repository:
 - First `feat:` commit → Release Please creates v0.1.0
 - First `fix:` commit → Release Please creates v0.0.1
 
-## 5. Clean Repository Checklist
+## 5. The Agents Page
+
+`docs/agents.md` ships as a skeleton with `TODO` markers. Fill it in before the initial
+commit — it is the page a person hands to a coding assistant instead of the whole site,
+so an empty one is a broken promise and a wrong one teaches an API that does not exist.
+
+Write it from the source you just wrote, not from the README: every name, argument,
+default and return type has to be one that exists, and every name a caller is told to
+import has to be importable. Check that before committing:
+
+```bash
+uv run python -c "import <package>; [getattr(<package>, n) for n in ('Name', ...)]"
+```
+
+`https://bedrock-python.github.io/pg-partsmith/agents/` is the worked example. The
+sections that carry the weight are **Scope** (what it does not do stops a model
+inventing features), **Rules that hold or break the code** and **Common mistakes**.
+Delete a section that has nothing true to say rather than padding it.
+
+Keep the `<!-- ... -->` guidance comment out of the committed page.
+
+## 6. Clean Repository Checklist
 
 Before pushing the initial commit, verify:
 
@@ -83,8 +104,9 @@ Before pushing the initial commit, verify:
 - [ ] No backup files (e.g., `.coverage (копия...)`, `file (copy).py`)
 - [ ] No cache files (`.mypy_cache`, `.ruff_cache`, `__pycache__`) - should be in `.gitignore`
 - [ ] `.release-please-manifest.json` contains `"0.0.0"`
+- [ ] `docs/agents.md` written from the real API, no `TODO` markers, guidance comment removed
 
-## 6. PyPI Publication
+## 7. PyPI Publication
 
 Before merging the Release Please PR:
 
@@ -97,15 +119,16 @@ Before merging the Release Please PR:
 
 2. Merge Release Please PR → automatic publication to PyPI
 
-## 7. Common Mistakes to Avoid
+## 8. Common Mistakes to Avoid
 
 ❌ Including AI agents in commits
 ❌ Committing `scripts/setup_repo.py` to the library repo
 ❌ Starting with version `0.1.0` instead of `0.0.0`
 ❌ Committing backup/cache files
 ❌ Creating multiple commits before initial push (messy history)
+❌ Shipping `docs/agents.md` with its `TODO` markers still in it
 
-## 8. Summary
+## 9. Summary
 
 **Clean initial commit = Clean repository forever**
 

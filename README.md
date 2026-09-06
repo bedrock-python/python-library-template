@@ -72,6 +72,8 @@ See [`.claude/LIBRARY_CREATION.md`](.claude/LIBRARY_CREATION.md) for important r
 - `Makefile` — fmt, check, test-unit, test-integration, test, build, docs-serve, docs-build
 - `.github/workflows/` — CI (lint + unit + integration), publish to PyPI, deploy docs, Release Please
 - `.github/` — dependabot, issue templates, PR template
-- `docs/` — zensical (MkDocs Material) setup with mkdocstrings
+- `docs/` — zensical (MkDocs Material) setup with mkdocstrings, a **Copy page** control that
+  hands any page to an LLM as Markdown, and `docs/agents.md`, the one-page brief for coding
+  assistants (ships as a skeleton — fill it in)
 - `.pre-commit-config.yaml` — ruff, mypy, conventional commits
 - `release-please-config.json` — automated semver + CHANGELOG generation

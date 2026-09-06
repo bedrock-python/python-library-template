@@ -1,0 +1,106 @@
+<!--
+  This page is the one people hand to a coding assistant instead of the whole site,
+  which is what makes an inaccurate one worse than none: it teaches a model an API
+  that does not exist. Two rules while filling it in.
+
+  Write it from the source, not from memory. Every name, argument, default and
+  return type here has to be one you read in {{ package_name }}/, and every name a
+  caller is told to import has to be importable. Delete a section that carries
+  nothing rather than padding it.
+
+  Keep it current. CONTRIBUTING.md says this page changes in the same pull request
+  the public API does; the pull request checklist names it. That promise is the only
+  thing keeping the page worth handing over.
+
+  bedrock-python.github.io/pg-partsmith/agents/ is the worked example to copy the
+  shape from. Delete this comment once the page says something.
+-->
+
+# {{ project_name }} for AI agents
+
+> One page holding everything a coding assistant needs to use {{ project_name }}
+> correctly, plus a map of where the rest of the documentation keeps the details it
+> leaves out. Give an agent this page rather than the whole site.
+
+| | |
+|---|---|
+| Package | `{{ project_slug }}` on PyPI, import root `{{ package_name }}` |
+| Requires | Python {{ python_min_version }}+ |
+| Install | `pip install {{ project_slug }}` |
+| Source | <https://github.com/{{ github_org }}/{{ project_slug }}> |
+
+## How to read this page
+
+Every page of this site is also served as raw Markdown at its own URL with `.md` in
+place of the trailing slash — this page is `/agents.md`, the quick start is
+`/guide/quickstart.md` — so anything the map below points at can be fetched as plain
+text rather than scraped out of HTML. The **Copy page** control at the top of a page
+does the same thing for a human with a chat window open. The one exception is the API
+reference: its Markdown is a list of instructions to a docstring renderer rather than
+the API, so it carries neither the control nor a `.md` twin — read it as HTML, or read
+the docstrings in the source.
+
+Top to bottom before writing code. [Rules that hold or break the code](#rules-that-hold-or-break-the-code)
+is the section correctness lives in — those are the things the library will not save
+you from. Every name used below is in the public API; if you need something not listed
+here, fetch the page the [documentation map](#documentation-map) points at rather than
+guessing a method that sounds plausible.
+
+## Scope
+
+**It does** TODO: what the library is for, in the vocabulary a caller thinks in.
+
+**It does not** TODO: the neighbouring problems it deliberately leaves alone. This
+paragraph stops a model from inventing a feature; it is worth more than the one above.
+
+## Mental model
+
+TODO: the handful of nouns the API is built from and the flow between them. Name each
+type once and say what it owns.
+
+## Wiring
+
+```python
+# TODO: the shortest correct working example, imports included. It has to run.
+```
+
+## API
+
+TODO: tables, not prose. Every public name a caller needs, with its arguments, their
+defaults and what comes back. Read the defaults out of the source rather than
+remembering them.
+
+| Name | Arguments | Returns |
+|---|---|---|
+| | | |
+
+## Rules that hold or break the code
+
+TODO: numbered, one rule per item, each one a thing the library will not save a caller
+from — an object that must not be shared, an argument whose default surprises people, a
+call that has to be repeated until it says it is finished, a lifetime that is the
+caller's to manage. Write the ones that are true here, not the ones that sound wise.
+
+## Common mistakes
+
+```python
+# WRONG — TODO: the mistake a model actually makes with this API
+
+# RIGHT — TODO: the same thing, done properly
+```
+
+## Errors
+
+TODO: the exception classes, what each one means, and what a caller should do about it.
+
+## Documentation map
+
+Fetch a page when the task is the one named beside it.
+
+| Page | Read it when |
+|---|---|
+| [Quick start](guide/quickstart.md) | writing the first integration end to end |
+| [Configuration](guide/configuration.md) | every setting, type and default |
+| [Advanced](guide/advanced.md) | TODO: what this page actually covers |
+| [API reference](reference/index.md) | an exact signature or docstring — HTML only, see above |
+| [Changelog](changelog.md) | what changed between versions |
