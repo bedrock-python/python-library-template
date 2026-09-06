@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # The only thing that can be wrong with a template is what it generates, so the
+  # check is the generated project's own gate: render with the defaults, then run
+  # exactly what a new library's CI would run.
+  render:
+    name: Render the template and run the generated gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Render with copier
+        run: |
+          uvx --with jinja2-time copier copy --defaults --trust --vcs-ref HEAD \
+            --data project_name=demo-lib \
+            --data project_slug=demo-lib \
+            --data package_name=demo_lib \
+            --data project_description="Demo library rendered from the template" \
+            --data author_name="Bedrock Python" \
+            --data author_email="maintainers@example.com" \
+            . "${RUNNER_TEMP}/demo-lib"
+
+      - name: The generated project passes its own gate
+        working-directory: ${{ runner.temp }}/demo-lib
+        run: |
+          uv sync --group dev --all-extras
+          make check
+          make test-unit
+          uv build
+
+  all-checks-passed:
+    name: All checks passed
+    if: always()
+    needs: [render]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every job above succeeded
+        run: echo '${{ toJSON(needs) }}' | jq -e 'all(.[]; .result == "success")'

@@ -1,19 +1,12 @@
 # Security Policy
 
-## Supported versions
-
-| Version | Supported |
-|---------|-----------|
-| the latest release | ✅ fixes ship as the next patch or minor |
-| older | ❌ upgrade to the latest release first |
-
 ## Reporting a vulnerability
 
 **Please do not report security vulnerabilities via public GitHub Issues.**
 
 Report it privately through GitHub, by
-[opening a draft security advisory](https://github.com/{{ github_org }}/{{ project_slug }}/security/advisories/new),
-or send an email to **{{ author_email }}**. Either way, include:
+[opening a draft security advisory](https://github.com/bedrock-python/python-library-template/security/advisories/new),
+or send an email to **shalaevad.alexey@gmail.com**. Either way, include:
 
 - Description of the vulnerability
 - Steps to reproduce
