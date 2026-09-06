@@ -6,7 +6,8 @@ Usage:
 Run AFTER the first CI pass: the master ruleset requires the "All checks passed"
 status, and a required check that never reports would block every merge. When the
 check is not found on the default branch the rule is left out and a warning printed;
-re-run once CI has been green.
+re-run once CI has been green, or pass --require-check when CI only runs on pull
+requests (the check is then never on the branch itself).
 
 Needs the gh CLI, authenticated with admin rights on the repository.
 """
@@ -67,6 +68,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("repo", help="org/repo")
     parser.add_argument("--topics", default="", help="comma-separated topics added on top of pyproject keywords")
+    parser.add_argument("--require-check", action="store_true",
+                        help=f"require '{REQUIRED_CHECK}' even when it is not found on the default branch (a CI that only runs on pull requests)")
     args = parser.parse_args()
     repo = args.repo
     org, name = repo.split("/", 1)
@@ -129,7 +132,7 @@ def main() -> None:
 
     step(f"Ruleset '{RULESET_NAME}' on {default_branch}: no deletion, no force-push, pull requests only")
     check_runs = gh(f"repos/{repo}/commits/{default_branch}/check-runs", ok=(404, 422)) or {}
-    has_check = any(run["name"] == REQUIRED_CHECK for run in check_runs.get("check_runs", []))
+    has_check = args.require_check or any(run["name"] == REQUIRED_CHECK for run in check_runs.get("check_runs", []))
     rules: list[dict] = [
         {"type": "deletion"},
         {"type": "non_fast_forward"},
