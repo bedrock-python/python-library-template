@@ -42,11 +42,16 @@ make check
 
 Then:
 1. Create a GitHub repo: `gh repo create bedrock-python/my-library --public`
-2. **Configure repo** (run once, then delete):
+2. **Configure repo** (after the first CI pass, then delete the script):
    ```bash
    python scripts/setup_repo.py bedrock-python/my-library
    git rm scripts/setup_repo.py .claude/LIBRARY_CREATION.md
    ```
+   Idempotent. Sets the org standard: `pypi`/`github-pages` environments and Pages,
+   read-only workflow tokens, squash/merge-commit only with branches deleted on merge,
+   secret scanning + push protection + Dependabot security updates + private
+   vulnerability reporting, topics from `pyproject` keywords, and a `master` ruleset
+   (pull requests only, no force-push or deletion, "All checks passed" required).
 3. **Push** (⚠️ **no** `Co-Authored-By:` in commits!):
    ```bash
    git init && git add . && git commit -m "feat: initial release" && git push -u origin master

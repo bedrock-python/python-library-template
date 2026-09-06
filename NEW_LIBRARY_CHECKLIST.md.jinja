@@ -31,11 +31,15 @@ then run from the template repo:
 python /path/to/python-library-template/scripts/setup_repo.py {{ github_org }}/{{ project_slug }}
 ```
 
-This configures:
-- GitHub environments (`pypi`, `github-pages`)
-- GitHub Pages (source: GitHub Actions)
-- Actions permissions (allow creating PRs for Release Please)
-- Branch protection on `master` requiring `All checks passed`
+This configures (idempotent, re-run any time):
+- GitHub environments (`pypi`, `github-pages`) and Pages (source: GitHub Actions)
+- Actions: read-only workflow token by default, Release Please may open PRs
+- Merge settings: squash or merge commit, branches deleted on merge, no wiki/projects,
+  docs site as the homepage, topics from `pyproject` keywords
+- Security: secret scanning, push protection, Dependabot alerts + security updates,
+  private vulnerability reporting
+- A `master` ruleset: pull requests only, no force-push or deletion, `All checks passed`
+  required (left out with a warning if CI has not reported yet — re-run after it has)
 
 ## Step 4 — PyPI Trusted Publisher (manual)
 
