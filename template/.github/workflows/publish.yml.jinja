@@ -25,7 +25,7 @@ jobs:
     outputs:
       tag: ${% raw %}{{ steps.tag.outputs.tag }}{% endraw %}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${% raw %}{{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.workflow_run.head_sha }}{% endraw %}
           fetch-tags: true
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${% raw %}{{ needs.check.outputs.tag }}{% endraw %}
 
@@ -69,4 +69,6 @@ jobs:
           echo "__version__ = \"$VERSION\"  # x-release-please-version" > {{ package_name }}/__version__.py
 
       - run: uv build
-      - run: uv publish
+      # --check-url: a run repeated after a failure skips what is already on the
+      # index instead of failing on it.
+      - run: uv publish --check-url https://pypi.org/simple/{{ project_slug }}/
