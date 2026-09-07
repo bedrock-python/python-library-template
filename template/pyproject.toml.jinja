@@ -86,8 +86,18 @@ target-version = "py{{ python_min_version | replace('.', '') }}"
 extend-exclude = ["*.md"]
 
 [tool.ruff.lint]
+# Everything selected here runs. An entry below names one rule the house style
+# disagrees with -- never a whole family that `select` has just asked for, which
+# reads as a promise the linter does not keep.
 select = ["F", "E", "W", "I", "B", "N", "S", "C4", "DTZ", "SIM", "TRY", "PERF", "RUF", "UP", "ANN", "T20", "PTH", "PLC", "PLE", "PLW"]
-ignore = ["TRY003", "S101", "ANN401", "RUF012", "S104", "S105", "S106", "ANN204", "DTZ", "ANN", "N802", "PERF401", "SIM105", "S607"]
+ignore = ["TRY003", "ANN401", "RUF012", "S104", "ANN204", "N802", "PERF401", "SIM105", "S607"]
+
+# Tests are held to a different standard from the library they exercise:
+# `assert` is what a test is made of, and a credential in a fixture is a literal
+# rather than a leak. Annotations are not on this list -- mypy reads
+# {{ package_name }}/ and never tests/, so ruff is the only thing holding that line here.
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S105", "S106"]
 
 [tool.ruff.format]
 quote-style = "double"
