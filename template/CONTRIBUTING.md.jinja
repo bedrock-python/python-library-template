@@ -26,6 +26,8 @@ make test             # full suite with 90% coverage threshold
 - **Docstrings** on public API only — Google style
 - **Line length** — 120 characters (ruff enforced)
 - **Quotes** — double quotes (ruff enforced)
+- **Timezone-aware datetimes** — `datetime.now(tz=...)`, never `utcnow()` (ruff `DTZ`)
+- **`assert` in tests only** — library code raises instead (ruff `S101`)
 - **No comments** unless the *why* is non-obvious
 
 ## Commit messages

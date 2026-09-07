@@ -38,6 +38,35 @@ jobs:
           make test-unit
           uv build
 
+      # A rule that is selected and then ignored looks exactly like a rule that
+      # works: the gate above stays green either way. Hand the generated project
+      # the mistakes the selected rules exist to catch and make it say so, and an
+      # assert in tests/ that has to stay accepted.
+      - name: The generated config runs the rules it selects
+        working-directory: ${{ runner.temp }}/demo-lib
+        run: |
+          cat > demo_lib/probe.py <<'PY'
+          import datetime
+
+
+          def stamp(offset):
+              return datetime.datetime.now() + offset
+          PY
+          cat > tests/unit/test_probe.py <<'PY'
+          def test__assert__still_reads_as_a_test() -> None:
+              assert True
+          PY
+          report=$(uv run ruff check --output-format concise demo_lib/probe.py || true)
+          echo "$report"
+          for rule in DTZ005 ANN201 ANN001; do
+            case "$report" in
+              *"$rule"*) ;;
+              *) echo "::error::$rule never fired -- the config selects the rule and then ignores it"; exit 1 ;;
+            esac
+          done
+          uv run ruff check tests/unit/test_probe.py
+          rm demo_lib/probe.py tests/unit/test_probe.py
+
   all-checks-passed:
     name: All checks passed
     if: always()
