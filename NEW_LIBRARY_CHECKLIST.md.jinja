@@ -42,7 +42,8 @@ python /path/to/python-library-template/scripts/setup_repo.py {{ github_org }}/{
 ```
 
 This configures (idempotent, re-run any time):
-- GitHub environments (`pypi`, `github-pages`) and Pages (source: GitHub Actions)
+- GitHub environments and Pages (source: GitHub Actions); `pypi` accepts deployments
+  from `master` only, so no other branch can publish
 - Actions: read-only workflow token by default, Release Please may open PRs
 - Merge settings: squash or merge commit, branches deleted on merge, no wiki/projects,
   docs site as the homepage, topics from `pyproject` keywords

@@ -78,3 +78,7 @@ reference — declines both with `copy_page: false` in its front matter.
 
 Releases are fully automated via [Release Please](https://github.com/googleapis/release-please).
 Merge a PR with conventional commits → Release Please creates a release PR → merge it → PyPI publish happens automatically.
+
+The publish waits for CI on the released commit and stops if it fails, or if the release tag and
+`{{ package_name }}/__version__.py` disagree. Fix or re-run CI, then re-run the Publish workflow.
+To publish an existing release tag by hand, from `master`: `gh workflow run publish.yml -f tag=<tag>`.

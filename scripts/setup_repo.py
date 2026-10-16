@@ -85,8 +85,24 @@ def main() -> None:
     # without a publish or docs workflow (the template itself) gets neither.
     pages = None
     if has_workflow("publish.yml"):
-        step("Environment: pypi (Trusted Publishing)")
-        gh(f"repos/{repo}/environments/pypi", "-X", "PUT")
+        # PyPI trusts this environment, so whatever may deploy to it may publish.
+        # Both publish triggers run with the default branch as their ref; nothing
+        # else gets in, and a policy added by hand is removed like any other drift.
+        step(f"Environment: pypi (Trusted Publishing), deployable from {default_branch} only")
+        gh(f"repos/{repo}/environments/pypi", "-X", "PUT", payload={
+            "deployment_branch_policy": {"protected_branches": False, "custom_branch_policies": True},
+        })
+        policies = gh(f"repos/{repo}/environments/pypi/deployment-branch-policies?per_page=100") or {}
+        allowed = False
+        for policy in policies.get("branch_policies", []):
+            if policy["name"] == default_branch and policy.get("type", "branch") == "branch":
+                allowed = True
+            else:
+                print(f"     removing deployment policy {policy.get('type', 'branch')} '{policy['name']}'")
+                gh(f"repos/{repo}/environments/pypi/deployment-branch-policies/{policy['id']}", "-X", "DELETE")
+        if not allowed:
+            gh(f"repos/{repo}/environments/pypi/deployment-branch-policies", "-X", "POST",
+               payload={"name": default_branch, "type": "branch"})
     if has_workflow("docs.yml"):
         step("Environment: github-pages; Pages built by Actions")
         gh(f"repos/{repo}/environments/github-pages", "-X", "PUT")
