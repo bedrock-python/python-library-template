@@ -82,12 +82,15 @@ it bumps all three: `CHANGELOG.md`, `.release-please-manifest.json` **and**
 
 Merge the PR → tag `{{ project_slug }}-v0.1.0` is created → PyPI publish triggers.
 
-Or to publish manually:
+To publish a release tag that already exists by hand (when its publish failed, say),
+run the Publish workflow from `master`:
+
 ```bash
-git tag {{ project_slug }}-v0.1.0
-git push origin {{ project_slug }}-v0.1.0
-# Then create a GitHub Release from that tag
+gh workflow run publish.yml --ref master -f tag={{ project_slug }}-v0.1.0
 ```
+
+Pushing a tag or creating a GitHub Release yourself publishes nothing. The Publish
+workflow runs after Release Please and on this dispatch, and on nothing else.
 
 ## Done ✓
 
@@ -97,3 +100,4 @@ git push origin {{ project_slug }}-v0.1.0
 - [ ] PyPI Trusted Publisher configured
 - [ ] `CODECOV_TOKEN` secret added
 - [ ] First release published to PyPI
+- [ ] This file deleted

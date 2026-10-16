@@ -42,10 +42,10 @@ make check
 
 Then:
 1. Create a GitHub repo: `gh repo create bedrock-python/my-library --public`
-2. **Configure repo** (after the first CI pass, then delete the script):
+2. **Configure repo** (after the first CI pass), from a checkout of this template
+   repository — the script lives here, not in the library:
    ```bash
    python scripts/setup_repo.py bedrock-python/my-library
-   git rm scripts/setup_repo.py .claude/LIBRARY_CREATION.md
    ```
    Idempotent. Sets the org standard: a `pypi` environment only `master` may deploy to,
    the `github-pages` environment and Pages,
@@ -82,7 +82,8 @@ and as `_commit` the template commit it was rendered from, or the closest one.
 
 See [`.claude/LIBRARY_CREATION.md`](.claude/LIBRARY_CREATION.md) for important rules:
 - **Never** add AI agents as co-authors in commits
-- Delete `scripts/setup_repo.py` before initial commit
+- Run `scripts/setup_repo.py` from this repository; a render contains neither it nor
+  `.claude/LIBRARY_CREATION.md`
 - Start with version `0.0.0` (Release Please creates `0.1.0`)
 
 ## What's included
