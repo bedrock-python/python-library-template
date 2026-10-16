@@ -11,8 +11,9 @@ existing ones. Treat it like library code.
 - `scripts/setup_repo.py` configures a freshly created GitHub repository to the org
   standard (ruleset on `master`, security settings, merge settings, topics). It is run
   once per new library and is also what keeps the existing repositories aligned.
-- `NEW_LIBRARY_CHECKLIST.md.jinja` and `.claude/LIBRARY_CREATION.md` are the operator
-  and agent instructions. Keep them in step with what the template actually does.
+- `template/NEW_LIBRARY_CHECKLIST.md.jinja` (rendered into every new library, deleted
+  there once set up) and `.claude/LIBRARY_CREATION.md` are the operator and agent
+  instructions. Keep them in step with what the template actually does.
 
 ## Checking a change
 
