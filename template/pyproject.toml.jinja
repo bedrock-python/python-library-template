@@ -38,9 +38,13 @@ docs = [
     "zensical>=0.0.37",
     "mkdocstrings-python>=2.0.3",
 ]
+# ruff and mypy decide whether `make check` is green, so they stay inside the
+# minor series this config was checked with: a ruff minor promotes rules into
+# the families `select` asks for. Moving to the next series is a change of its
+# own, with CI on it.
 dev = [
-    "ruff>=0.15.1",
-    "mypy>=1.19.1",
+    "ruff>=0.17.1,<0.18",
+    "mypy>=2.4.0,<2.5",
     "pre-commit>=4.5.1",
     { include-group = "test" },
 ]
