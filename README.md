@@ -59,6 +59,24 @@ Then:
 4. Set up PyPI Trusted Publisher at pypi.org/manage/account/publishing/
 5. Add `CODECOV_TOKEN` secret in repo Settings → Secrets → Actions
 
+## Pulling template changes into a library
+
+A render records its answers and the template commit it came from in
+`.copier-answers.yml`. Commit that file and leave it to Copier. To bring a library up to
+the template's `master`, from the library's clean working tree:
+
+```bash
+uvx --with jinja2-time copier update --trust --defaults
+```
+
+Copier applies what changed in the template since the recorded commit as a three-way
+merge with the library's own edits, leaves conflicts as inline markers, and moves
+`_commit` forward. A file the library deleted, such as the checklist, stays deleted.
+
+A library rendered before the answers file existed needs one written by hand first: the
+answers it was rendered with, `_src_path: gh:bedrock-python/python-library-template`,
+and as `_commit` the template commit it was rendered from, or the closest one.
+
 ## For AI Agents
 
 See [`.claude/LIBRARY_CREATION.md`](.claude/LIBRARY_CREATION.md) for important rules:

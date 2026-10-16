@@ -45,13 +45,16 @@ _jinja_extensions:
   - jinja2_time.TimeExtension
 
 _tasks:
-  - >-
-    echo "Template generated. Next steps:
-    1. uv sync --group dev
-    2. uv run pre-commit install --hook-type commit-msg
-    3. Create the GitHub repo and push (branch: master)
-    4. After the first CI pass, from the template repo:
-    python scripts/setup_repo.py {{ github_org }}/{{ project_slug }}
-    5. Configure the PyPI Trusted Publisher at pypi.org
-    6. Add the CODECOV_TOKEN secret.
-    See NEW_LIBRARY_CHECKLIST.md for full details."
+  # On a copy only: `copier update` runs tasks too, and a library taking a
+  # template update finished these steps long ago.
+  - command: >-
+      echo "Template generated. Next steps:
+      1. uv sync --group dev
+      2. uv run pre-commit install --hook-type commit-msg
+      3. Create the GitHub repo and push (branch: master)
+      4. After the first CI pass, from the template repo:
+      python scripts/setup_repo.py {{ github_org }}/{{ project_slug }}
+      5. Configure the PyPI Trusted Publisher at pypi.org
+      6. Add the CODECOV_TOKEN secret.
+      See NEW_LIBRARY_CHECKLIST.md for full details."
+    when: "{{ _copier_operation == 'copy' }}"

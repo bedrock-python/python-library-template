@@ -67,10 +67,49 @@ jobs:
           uv run ruff check tests/unit/test_probe.py
           rm demo_lib/probe.py tests/unit/test_probe.py
 
+  # A library takes template changes with `copier update`, so a change has to
+  # arrive that way too: a render of master, updated to this commit, has to
+  # come out exactly as a fresh render of this commit.
+  update:
+    name: copier update brings the change into a render of master
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Update a render of master to this commit
+        run: |
+          git fetch --no-tags origin master:refs/heads/ci-base
+          git branch -f ci-head HEAD
+          if ! git cat-file -e 'ci-base:template/{{_copier_conf.answers_file}}.jinja' 2>/dev/null; then
+            echo "A render of master has no answers file to update from."
+            exit 0
+          fi
+          render() {
+            uvx --from copier==9.19.1 --with jinja2-time==0.2.0 copier copy --quiet --defaults --trust --vcs-ref "$1" \
+              --data project_name=demo-lib \
+              --data project_slug=demo-lib \
+              --data package_name=demo_lib \
+              --data project_description="Demo library rendered from the template" \
+              --data author_name="Bedrock Python" \
+              --data author_email="maintainers@example.com" \
+              "$GITHUB_WORKSPACE" "$2"
+          }
+          render ci-base "$RUNNER_TEMP/updated"
+          render ci-head "$RUNNER_TEMP/fresh"
+          cd "$RUNNER_TEMP/updated"
+          git init -q -b master
+          git add -A
+          git -c user.name=ci -c user.email=ci@example.com commit -q -m "render of master"
+          uvx --from copier==9.19.1 --with jinja2-time==0.2.0 copier update --quiet --defaults --trust --vcs-ref ci-head
+          diff -r --exclude=.git "$RUNNER_TEMP/fresh" "$RUNNER_TEMP/updated"
+
   all-checks-passed:
     name: All checks passed
     if: always()
-    needs: [render]
+    needs: [render, update]
     runs-on: ubuntu-latest
     steps:
       - name: Every job above succeeded
