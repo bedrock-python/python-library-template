@@ -47,7 +47,8 @@ Then:
    python scripts/setup_repo.py bedrock-python/my-library
    git rm scripts/setup_repo.py .claude/LIBRARY_CREATION.md
    ```
-   Idempotent. Sets the org standard: `pypi`/`github-pages` environments and Pages,
+   Idempotent. Sets the org standard: a `pypi` environment only `master` may deploy to,
+   the `github-pages` environment and Pages,
    read-only workflow tokens, squash/merge-commit only with branches deleted on merge,
    secret scanning + push protection + Dependabot security updates + private
    vulnerability reporting, topics from `pyproject` keywords, and a `master` ruleset
