@@ -24,6 +24,8 @@ import tomllib
 
 RULESET_NAME = "master-rules"
 REQUIRED_CHECK = "All checks passed"
+RELEASE_APP_CLIENT_ID = "RELEASE_PLEASE_APP_CLIENT_ID"  # organization variable
+RELEASE_APP_PRIVATE_KEY = "RELEASE_PLEASE_APP_PRIVATE_KEY"  # organization secret
 MAX_TOPICS = 20
 
 
@@ -110,6 +112,22 @@ def main() -> None:
         if pages is None:
             gh(f"repos/{repo}/pages", "-X", "POST", payload={"build_type": "workflow"}, ok=(409,))
             pages = gh(f"repos/{repo}/pages", ok=(404,))
+
+    if has_workflow("release-please.yml"):
+        # Without the App the release PR is opened with GITHUB_TOKEN and CI never
+        # runs on it; the workflow falls back and warns, this says so up front.
+        step("Release Please: the release App's client ID and private key reach the repository")
+        def visible(kind: str) -> set[str]:
+            names: set[str] = set()
+            for scope in (f"organization-{kind}", kind):
+                listed = gh(f"repos/{repo}/actions/{scope}?per_page=100", ok=(403, 404)) or {}
+                names.update(item["name"] for item in listed.get(kind, []))
+            return names
+
+        for kind, name in (("variables", RELEASE_APP_CLIENT_ID), ("secrets", RELEASE_APP_PRIVATE_KEY)):
+            if name not in visible(kind):
+                print(f"     [WARN] Actions {kind[:-1]} {name} is not visible to {repo}: CI will not run on"
+                      " release PRs until it is (template README, 'The release App')")
 
     step("Actions: workflows get a read-only token unless they ask for more; Release Please may open PRs")
     gh(f"repos/{repo}/actions/permissions/workflow", "-X", "PUT",
