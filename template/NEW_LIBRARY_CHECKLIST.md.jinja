@@ -51,6 +51,8 @@ This configures (idempotent, re-run any time):
   private vulnerability reporting
 - A `master` ruleset: pull requests only, no force-push or deletion, `All checks passed`
   required (left out with a warning if CI has not reported yet — re-run after it has)
+- A warning if the repository cannot see the release App's credentials: release PRs
+  would then get no CI (template README, "The release App")
 
 ## Step 4 — PyPI Trusted Publisher (manual)
 

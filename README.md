@@ -78,6 +78,25 @@ A library rendered before the answers file existed needs one written by hand fir
 answers it was rendered with, `_src_path: gh:bedrock-python/python-library-template`,
 and as `_commit` the template commit it was rendered from, or the closest one.
 
+## The release App
+
+Release Please opens and updates its release PR with a token of an org-owned GitHub App.
+With the workflow's own `GITHUB_TOKEN`, the PR's CI run is held and never starts, the
+required "All checks passed" never reports, and the PR can only be merged after someone
+closes and reopens it. One App serves every library and is set up once:
+
+1. Create a GitHub App owned by the org (org Settings → Developer settings → GitHub Apps):
+   webhook off, repository permissions **Contents: Read and write** and **Pull requests:
+   Read and write**, installable on this account only.
+2. Install it on the org, for all repositories.
+3. In org Settings → Secrets and variables → Actions, visible to all repositories:
+   variable `RELEASE_PLEASE_APP_CLIENT_ID` = the App's Client ID, secret
+   `RELEASE_PLEASE_APP_PRIVATE_KEY` = a private key generated for it.
+
+Release PRs, tags and GitHub Releases are then authored by the App's bot account. While
+the variable is unset, the workflow falls back to `GITHUB_TOKEN` and its run carries a
+warning, and `setup_repo.py` warns for any repository that cannot see the two names.
+
 ## For AI Agents
 
 See [`.claude/LIBRARY_CREATION.md`](.claude/LIBRARY_CREATION.md) for important rules:
