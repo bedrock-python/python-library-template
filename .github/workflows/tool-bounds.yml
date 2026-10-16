@@ -1,0 +1,86 @@
+name: Tool bounds
+
+# The generated dev group caps ruff and mypy at the minor series the generated
+# config was checked with. Dependabot cannot read pyproject.toml.jinja, so this
+# is what says a cap has fallen behind: it renders the template with the caps
+# lifted, runs the generated gate on whatever that resolves, and fails when a
+# newer series is out. The gate result in the log says whether raising the cap
+# is a one-line change or needs work in the config first.
+#
+# Its own workflow, not a job in CI: CI's gate requires every job to succeed,
+# and a job that runs on a schedule only would be skipped on every pull request.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  newest:
+    name: Caps against the newest ruff and mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Render with copier
+        run: |
+          uvx --from copier==9.19.1 --with jinja2-time==0.2.0 copier copy --defaults --trust --vcs-ref HEAD \
+            --data project_name=demo-lib \
+            --data project_slug=demo-lib \
+            --data package_name=demo_lib \
+            --data project_description="Demo library rendered from the template" \
+            --data author_name="Bedrock Python" \
+            --data author_email="maintainers@example.com" \
+            . "${RUNNER_TEMP}/demo-lib"
+
+      - name: Lift the caps
+        working-directory: ${{ runner.temp }}/demo-lib
+        run: |
+          cp pyproject.toml "${RUNNER_TEMP}/capped.toml"
+          sed -i -E 's/"(ruff|mypy)>=([^,"]+),<[^"]+"/"\1>=\2"/' pyproject.toml
+          uv sync --group dev --all-extras
+
+      - name: The generated gate on the newest versions
+        id: gate
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/demo-lib
+        run: |
+          make check
+          make test-unit
+
+      - name: The caps admit the newest versions
+        working-directory: ${{ runner.temp }}/demo-lib
+        env:
+          GATE: ${{ steps.gate.outcome }}
+        run: |
+          uv run --with packaging python - "${RUNNER_TEMP}/capped.toml" <<'PY'
+          import os
+          import sys
+          import tomllib
+          from importlib.metadata import version
+
+          from packaging.requirements import Requirement
+
+          with open(sys.argv[1], "rb") as capped:
+              dev = tomllib.load(capped)["dependency-groups"]["dev"]
+          stale = []
+          for entry in dev:
+              if isinstance(entry, str):
+                  req = Requirement(entry)
+                  if req.name in ("ruff", "mypy"):
+                      newest = version(req.name)
+                      print(f"{req.name}: newest {newest}, template allows {req.specifier}")
+                      if newest not in req.specifier:
+                          stale.append(f"{req.name} {newest} is out, the template allows {req.specifier}")
+          for line in stale:
+              print(f"::error::{line}")
+          passed = os.environ["GATE"] == "success"
+          if stale:
+              print(f"The generated gate {'passes' if passed else 'FAILS'} with the caps lifted.")
+          elif not passed:
+              print("::error::The generated gate fails on the versions the caps admit.")
+          sys.exit(1 if stale or not passed else 0)
+          PY

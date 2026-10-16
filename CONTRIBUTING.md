@@ -20,7 +20,7 @@ Render the template and run the generated project's own gate — that is exactly
 does:
 
 ```bash
-uvx --with jinja2-time copier copy --defaults --trust --vcs-ref HEAD \
+uvx --from copier==9.19.1 --with jinja2-time==0.2.0 copier copy --defaults --trust --vcs-ref HEAD \
   --data project_name=demo-lib --data project_slug=demo-lib --data package_name=demo_lib \
   --data project_description="Demo" --data author_name="You" --data author_email="you@example.com" \
   . /tmp/demo-lib
