@@ -148,6 +148,13 @@ jobs:
       - uses: astral-sh/setup-uv@v7
 
       - run: uv build
-      # --check-url: a run repeated after a failure skips what is already on the
-      # index instead of failing on it.
+      # PEP 740 provenance. uv publish uploads attestations but does not make
+      # them: this signs each distribution with the job's OIDC identity
+      # (Sigstore) into <file>.publish.attestation, and PyPI rejects an upload
+      # whose attestation does not match the Trusted Publisher.
+      - run: uvx --from 'pypi-attestations>=0.0.30' pypi-attestations sign dist/*.whl dist/*.tar.gz
+      # No file arguments: uv's default, dist/*, takes in the .attestation files
+      # too; naming the distributions would upload them without their
+      # attestations. --check-url: a run repeated after a failure skips what is
+      # already on the index instead of failing on it.
       - run: uv publish --check-url https://pypi.org/simple/{{ project_slug }}/
