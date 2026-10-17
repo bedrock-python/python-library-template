@@ -124,9 +124,9 @@ def main() -> None:
                 names.update(item["name"] for item in listed.get(kind, []))
             return names
 
-        for kind, name in (("variables", RELEASE_APP_CLIENT_ID), ("secrets", RELEASE_APP_PRIVATE_KEY)):
-            if name not in visible(kind):
-                print(f"     [WARN] Actions {kind[:-1]} {name} is not visible to {repo}: CI will not run on"
+        for kind, setting in (("variables", RELEASE_APP_CLIENT_ID), ("secrets", RELEASE_APP_PRIVATE_KEY)):
+            if setting not in visible(kind):
+                print(f"     [WARN] Actions {kind[:-1]} {setting} is not visible to {repo}: CI will not run on"
                       " release PRs until it is (template README, 'The release App')")
 
     step("Actions: workflows get a read-only token unless they ask for more; Release Please may open PRs")
