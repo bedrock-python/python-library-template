@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["{{ python_min_version }}", "3.12", "3.13"]
+        python-version: [{% for minor in range(python_min_version.split(".")[1] | int, python_max_version.split(".")[1] | int + 1) %}"3.{{ minor }}"{{ ", " if not loop.last }}{% endfor %}]
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
@@ -34,7 +34,7 @@ jobs:
       - run: uv sync --group dev --all-extras
       - run: uv run pytest -m unit --cov={{ package_name }} --cov-report=xml --cov-fail-under=90
       - uses: codecov/codecov-action@v6
-        if: matrix.python-version == '3.12'
+        if: matrix.python-version == '{{ python_max_version }}'
         with:
           token: ${% raw %}{{ secrets.CODECOV_TOKEN }}{% endraw %}
           files: coverage.xml

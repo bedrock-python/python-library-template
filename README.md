@@ -24,7 +24,7 @@ Copier will prompt for:
 | `author_name` | Author full name | `Alex Shalaev` |
 | `author_email` | Author email | `you@example.com` |
 | `github_org` | GitHub org or username | `bedrock-python` |
-| `python_min_version` | Minimum Python version | `3.11` |
+| `python_min_version` | Minimum Python version, 3.10 to 3.14. The unit-test matrix and the classifiers run from it to the newest version (`python_max_version` in `copier.yml`) | `3.11` |
 | `initial_version` | Initial version | `0.0.0` |
 
 ## After generation
