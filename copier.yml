@@ -29,10 +29,23 @@ github_org:
   help: "GitHub organization or username"
   default: "bedrock-python"
 
+# The newest Python a render declares and runs its unit tests on. Not asked:
+# raise it here once the libraries move to a new release.
+python_max_version:
+  type: str
+  default: "3.14"
+  when: false
+
 python_min_version:
   type: str
-  help: "Minimum Python version"
+  help: "Minimum Python version (3.10 to {{ python_max_version }})"
   default: "3.11"
+  validator: >-
+    {%- set minor = python_min_version.split(".")[-1] -%}
+    {%- if not python_min_version.startswith("3.") or not minor.isdigit()
+        or minor | int < 10 or minor | int > python_max_version.split(".")[-1] | int -%}
+    Use a 3.x version from 3.10 to {{ python_max_version }}
+    {%- endif -%}
 
 initial_version:
   type: str

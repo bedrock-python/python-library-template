@@ -12,7 +12,9 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: {{ python_min_version }}",
+{%- for minor in range(python_min_version.split(".")[1] | int, python_max_version.split(".")[1] | int + 1) %}
+    "Programming Language :: Python :: 3.{{ minor }}",
+{%- endfor %}
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
